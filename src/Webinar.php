@@ -24,7 +24,7 @@ class Webinar extends Model
 
     protected $casts = [
         'start_time' => 'datetime',
-        'created_at'=> 'datetime',
+        'created_at' => 'datetime',
     ];
 
     public function settings()
@@ -37,14 +37,22 @@ class Webinar extends Model
         return $this->hasOne(Recurrence::class);
     }
 
+    public function batchregistrants($args)
+    {
+        return $this->newQuery()->sendRequest('post', ['webinars/' . $this->id . '/batch_registrants', $args])->json();
+        // return $this->hasOne(Recurrence::class);
+    }
+
     public function registrants()
     {
         return $this->hasMany(WebinarRegistrant::class);
     }
+
     public function participants()
     {
         return $this->hasMany(WebinarParticipant::class);
     }
+
     public function occurrences()
     {
         return $this->hasMany(WebinarOccurrence::class);
@@ -77,6 +85,6 @@ class Webinar extends Model
 
     public function endWebinar()
     {
-        return $this->newQuery()->sendRequest('put', ['webinars/'.$this->id.'/status', ['action' => 'end']])->successful();
+        return $this->newQuery()->sendRequest('put', ['webinars/' . $this->id . '/status', ['action' => 'end']])->successful();
     }
 }
